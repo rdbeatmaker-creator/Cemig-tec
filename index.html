@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="CONTA+ — acompanhe água e energia, estime a próxima conta e controle o consumo.">
+<title>CONTA+ | Água e Energia</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brandMark">C+</div><div><b>CONTA+</b><small>Monitor inteligente</small></div></div>
+  <nav>
+    <button class="nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+    <button class="nav" data-page="agua">💧 <span>Água</span></button>
+    <button class="nav" data-page="energia">⚡ <span>Energia</span></button>
+    <button class="nav" data-page="historico">📊 <span>Histórico</span></button>
+    <button class="nav" data-page="config">⚙️ <span>Configurações</span></button>
+  </nav>
+  <div class="sideTip">💡 <div><b>Dica</b><small>Registre as leituras no mesmo dia de cada mês para melhorar a projeção.</small></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="headLeft"><button id="menu" class="icon mobileOnly">☰</button><div><small class="kicker">MONITORAMENTO</small><h1 id="title">Dashboard</h1></div></div>
+  <div class="headRight"><button id="bell" class="icon">🔔</button><div class="user"><div class="avatar">G</div><div><b id="houseLabel">Minha casa</b><small>Residência</small></div></div></div>
+</header>
+
+<section id="dashboard" class="page active">
+  <div class="hero"><div><small class="kicker">VISÃO GERAL</small><h2>Saiba antes quanto sua conta pode vir.</h2><p>Use as leituras do hidrômetro e do medidor de energia para acompanhar consumo, custo acumulado e projeção mensal.</p></div><button class="primary" data-action="new">＋ Nova medição</button></div>
+
+  <div class="cards">
+    <article class="card"><div class="cardHead"><div><small>ÁGUA</small><h3 id="dWater">R$ 0,00</h3></div><i class="bubble water">💧</i></div><div class="meta"><span>Consumo</span><b id="dWaterK">0 m³</b></div><div class="bar"><i id="barWater"></i></div><small id="waterStatus">Sem medição</small></article>
+    <article class="card"><div class="cardHead"><div><small>ENERGIA</small><h3 id="dEnergy">R$ 0,00</h3></div><i class="bubble energy">⚡</i></div><div class="meta"><span>Consumo</span><b id="dEnergyK">0 kWh</b></div><div class="bar"><i id="barEnergy"></i></div><small id="energyStatus">Sem medição</small></article>
+    <article class="card total"><div class="cardHead"><div><small>TOTAL PROJETADO</small><h3 id="dTotal">R$ 0,00</h3></div><i class="bubble totalI">💰</i></div><div class="meta"><span>Água + energia</span><b id="dDay">—</b></div><small id="dTotalStatus">Registre as duas leituras para acompanhar o total.</small></article>
+  </div>
+
+  <div class="grid2">
+    <article class="panel"><div class="panelTitle"><div><small class="kicker">PROJEÇÃO</small><h3>Mês atual</h3></div><span id="month"></span></div><div class="forecast">
+      <div><span>💧</span><div><small>Água</small><b id="pWater">R$ 0,00</b><em id="pWaterText">Sem dados</em></div></div>
+      <div><span>⚡</span><div><small>Energia</small><b id="pEnergy">R$ 0,00</b><em id="pEnergyText">Sem dados</em></div></div>
+    </div></article>
+    <article class="panel"><div class="panelTitle"><div><small class="kicker">ANÁLISE</small><h3>Alerta inteligente</h3></div></div><div id="smart" class="smart"><strong>💡 Comece pelas leituras</strong><p>O sistema compara sua projeção com as metas configuradas.</p></div></article>
+  </div>
+
+  <article class="panel"><div class="panelTitle"><div><small class="kicker">REGISTROS</small><h3>Últimas medições</h3></div><button class="link" data-page="historico">Ver histórico →</button></div><div id="recent" class="empty">📊<b>Nenhuma medição</b><small>Registre sua primeira leitura.</small></div></article>
+</section>
+
+<section id="agua" class="page">
+  <div class="pageHead"><div><small class="kicker">HIDRÔMETRO</small><h2>Monitor de água</h2><p>Calcule consumo e projeção usando a leitura do hidrômetro.</p></div></div>
+  <article class="formCard">
+    <div class="notice">ℹ️ Para uma estimativa realmente próxima da sua fatura, informe a tarifa efetiva da sua conta. A água pode ter tarifa fixa, faixas progressivas e esgoto.</div>
+    <div class="formGrid">
+      <label>Leitura anterior (m³)<input id="waPrev" type="number" min="0" step="0.001" placeholder="Ex.: 125"></label>
+      <label>Leitura atual (m³)<input id="waCurr" type="number" min="0" step="0.001" placeholder="Ex.: 138"></label>
+      <label>Dias já decorridos<input id="waDays" type="number" min="1" max="31" placeholder="Ex.: 20"></label>
+      <label>Tarifa variável média (R$/m³)<input id="waRate" type="number" min="0" step="0.0001" placeholder="Ex.: 8,50"></label>
+      <label>Tarifa fixa mensal (R$)<input id="waFixed" type="number" min="0" step="0.01" placeholder="Ex.: 20,00"></label>
+      <label>Esgoto sobre água (%)<input id="waSewer" type="number" min="0" max="200" step="0.01" placeholder="Ex.: 74"></label>
+    </div>
+    <div class="actions"><button class="primary" id="calcWater">Calcular e salvar</button><button class="secondary" id="clearWater">Limpar</button></div>
+    <div id="waterResult" class="result hidden"></div>
+  </article>
+</section>
+
+<section id="energia" class="page">
+  <div class="pageHead"><div><small class="kicker">MEDIDOR</small><h2>Monitor de energia</h2><p>Estime a conta a partir do consumo em kWh e da tarifa configurada.</p></div></div>
+  <article class="formCard">
+    <div class="notice">ℹ️ A fatura elétrica pode incluir tarifa de energia, bandeira, impostos, iluminação pública e outros itens. Para maior precisão, use a tarifa média efetiva da sua fatura.</div>
+    <div class="formGrid">
+      <label>Leitura anterior (kWh)<input id="enPrev" type="number" min="0" step="0.001" placeholder="Ex.: 10450"></label>
+      <label>Leitura atual (kWh)<input id="enCurr" type="number" min="0" step="0.001" placeholder="Ex.: 10580"></label>
+      <label>Dias já decorridos<input id="enDays" type="number" min="1" max="31" placeholder="Ex.: 20"></label>
+      <label>Tarifa média (R$/kWh)<input id="enRate" type="number" min="0" step="0.00001" placeholder="Ex.: 0,90"></label>
+      <label>Encargos/bandeira adicionais (R$)<input id="enExtra" type="number" min="0" step="0.01" placeholder="Ex.: 0,00"></label>
+      <label>Iluminação pública / outros (R$)<input id="enPublic" type="number" min="0" step="0.01" placeholder="Ex.: 0,00"></label>
+    </div>
+    <div class="actions"><button class="primary" id="calcEnergy">Calcular e salvar</button><button class="secondary" id="clearEnergy">Limpar</button></div>
+    <div id="energyResult" class="result hidden"></div>
+  </article>
+</section>
+
+<section id="historico" class="page">
+  <div class="pageHead"><div><small class="kicker">DADOS</small><h2>Histórico</h2><p>Compare seus registros ao longo dos meses.</p></div><button class="danger" id="clearHistory">Apagar histórico</button></div>
+  <article class="panel tableWrap"><div class="table"><div class="tr th"><span>Data</span><span>Tipo</span><span>Consumo</span><span>Projeção</span></div><div id="history"></div></div></article>
+</section>
+
+<section id="config" class="page">
+  <div class="pageHead"><div><small class="kicker">SISTEMA</small><h2>Configurações</h2><p>Defina metas e os dados usados nas projeções.</p></div></div>
+  <article class="formCard">
+    <h3>Residência</h3><div class="formGrid">
+      <label>Nome<input id="cfgName" type="text" placeholder="Minha casa"></label>
+      <label>Moradores<input id="cfgPeople" type="number" min="1" placeholder="4"></label>
+      <label>Meta de água (m³/mês)<input id="cfgWaterGoal" type="number" min="0" step="0.1" placeholder="15"></label>
+      <label>Meta de energia (kWh/mês)<input id="cfgEnergyGoal" type="number" min="0" step="0.1" placeholder="200"></label>
+    </div>
+    <h3 class="sectionTitle">Perfil de tarifa</h3><div class="formGrid">
+      <label>Concessionária de água<input id="cfgWaterCompany" type="text" placeholder="Ex.: COPASA"></label>
+      <label>Concessionária de energia<input id="cfgEnergyCompany" type="text" placeholder="Ex.: CEMIG"></label>
+      <label>Categoria de energia<select id="cfgEnergyClass"><option>Residencial Normal</option><option>Residencial Baixa Renda</option><option>Residencial Desconto Social</option></select></label>
+      <label>Bandeira<select id="cfgFlag"><option value="verde">Verde</option><option value="amarela">Amarela</option><option value="vermelha1">Vermelha Patamar 1</option><option value="vermelha2">Vermelha Patamar 2</option></select></label>
+    </div>
+    <div class="notice">Tarifas reguladas mudam. O CONTA+ deixa os valores editáveis para você não depender de uma tarifa antiga. O cálculo da fatura exata deve usar os dados da sua própria conta.</div>
+    <button class="primary" id="saveCfg">Salvar configurações</button>
+  </article>
+  <article class="panel"><div class="panelTitle"><div><small class="kicker">REFERÊNCIA</small><h3>Tarifas conhecidas</h3></div></div><p class="muted">O sistema pode usar perfis oficiais como referência, mas não substitui a fatura. Em Minas Gerais, a CEMIG publica tarifas vigentes e bandeiras; a COPASA informa estrutura com tarifa fixa, variável e esgoto.</p><div class="sources"><a href="https://www.cemig.com.br/valores-e-tarifas/tarifas-vigentes/" target="_blank" rel="noopener">CEMIG — tarifas vigentes</a><a href="https://www.cemig.com.br/valores-e-tarifas/bandeira-tarifaria/" target="_blank" rel="noopener">CEMIG — bandeiras</a><a href="https://www.copasa.com.br/" target="_blank" rel="noopener">COPASA — site oficial</a></div></article>
+</section>
+</main>
+
+<div id="modal" class="modal"><div class="modalBox"><button id="closeModal" class="close">×</button><small class="kicker">NOVA MEDIÇÃO</small><h2>O que você quer medir?</h2><div class="modalOptions"><button data-go="agua">💧<b>Água</b><small>Hidrômetro</small></button><button data-go="energia">⚡<b>Energia</b><small>Medidor</small></button></div></div></div>
+<script src="app.js"></script>
+</body>
+</html>
